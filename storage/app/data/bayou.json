@@ -1,0 +1,95 @@
+{
+    "ASF": [
+        "ASF_SP1",
+        "ASF_SP2",
+        "RML",
+        "BG"
+    ],
+
+    "RML": [
+        "RML_SP1",
+        "RML_SP2",
+        "PR",
+        "DL",
+        "BG"
+    ],
+
+    "PR": [
+        "PR_SP1",
+        "SL_SP1",
+        "SL",
+        "DL",
+        "AF"
+    ],
+
+    "SL": [
+        "SL_SP1",
+        "SL_SP2"
+    ],
+
+    "CMN": [
+        "CMN_SP1",
+        "CMN_SP2",
+        "SL",
+        "AF",
+        "SB"
+    ],
+
+    "SB": [
+        "SB_SP1",
+        "CG",
+        "HWC",
+        "AF"
+    ],
+
+    "CG": [
+        "CG_SP1",
+        "CG_SP2"
+    ],
+
+    "LD": [
+        "BG",
+        "AF",
+        "SB",
+        "DL",
+        "HWC",
+        "PC"
+    ],
+
+    "AF": [
+        "DL"
+    ],
+
+    "PC": [
+        "CH",
+        "DR",
+        "HWC"
+    ],
+
+    "SH": [
+        "SH_SP1",
+        "DR",
+        "HWC",
+        "CG"
+    ],
+
+    "DR": [
+        "DR_SP1",
+        "DR_SP2",
+        "CH_SP1"
+    ],
+
+    "CH": [
+        "CH_SP1",
+        "CH_SP2",
+        "BG",
+        "DR"
+    ],
+
+    "BG": [
+        "BG_SP1",
+        "BG_SP2",
+        "BG_SP3",
+        "PC"
+    ]
+}

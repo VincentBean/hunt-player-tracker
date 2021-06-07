@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\UpdateMap;
+use App\Models\Graph;
 use App\Models\Lobby;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -15,7 +16,9 @@ class UpdateLobbies extends Command
 
     public function handle()
     {
-        broadcast(new UpdateMap(Lobby::first(), $this->getEdges()));
+//        broadcast(new UpdateMap(Lobby::first(), $this->getEdges()));
+
+        $this->generateGraph();
 
         return 0;
     }
@@ -34,4 +37,18 @@ class UpdateLobbies extends Command
 
         return $edges;
     }
+
+
+    protected function generateGraph()
+    {
+        $graph = new Graph();
+
+        $edges = json_decode(File::get(storage_path('app/data/edges.json')), true);
+
+dd($edges);
+
+
+    }
+
+
 }

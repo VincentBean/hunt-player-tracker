@@ -112,8 +112,7 @@ export default {
                     this.ctx.fillStyle = "#FF0000";
                 }
 
-                this.ctx.fillRect(data.x, data.y, 10, 10);
-
+                this.ctx.fillRect(data.x-5, data.y-5, 10, 10);
             }
         },
 
