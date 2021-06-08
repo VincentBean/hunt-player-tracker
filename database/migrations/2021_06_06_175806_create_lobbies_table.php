@@ -18,6 +18,7 @@ class CreateLobbiesTable extends Migration
             $table->string('code');
             $table->integer('countdown')->default(60);
             $table->boolean('started')->default(false);
+            $table->string('map');
             $table->json('graph')->nullable();
             $table->timestamps();
         });

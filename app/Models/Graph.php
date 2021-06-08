@@ -17,10 +17,27 @@ class Graph extends Model
     {
         $this->vertices = new Collection();
         $this->edges = new Collection();
-
     }
 
-    public function constructFromFile(): self
+    public function toJson($options = 0): string
+    {
+        return json_encode([
+            'vertices' => $this->vertices->toArray(),
+            'edges' => $this->edges->toArray()
+        ]);
+    }
+
+    public function fromJson($value, $asObject = false): self
+    {
+        $data = json_decode($value, true);
+
+        $this->vertices = collect($data['vertices']);
+        $this->edges = collect($data['edges']);
+
+        return $this;
+    }
+
+    public function fromFile(): self
     {
         $edges = json_decode(File::get(storage_path('app/data/' . $this->map . '.json')), true);
 
@@ -67,12 +84,13 @@ class Graph extends Model
     protected function getEdges(string $vertex): Collection
     {
         return $this->edges->where('a', '=', $vertex)
-            ->merge($this->edges->where('b', '=', $vertex))->map(function($edge) use ($vertex) {
-                if ($edge['a'] == $vertex) return $edge;
+            ->merge($this->edges->where('b', '=', $vertex))->map(function ($edge) use ($vertex) {
+                if ($edge['a'] == $vertex) {
+                    return $edge;
+                }
                 return ['a' => $vertex, 'b' => $edge['a']];
             });
     }
-
 
     public function shiftWeights()
     {
@@ -84,7 +102,6 @@ class Graph extends Model
 
             $distributedWeight = $sourceVertex['weight'] / $edges->count();
 
-
             foreach ($edges->pluck('b') as $targetVertex) {
                 $weightCalcs[$targetVertex] = $distributedWeight;
 
@@ -94,7 +111,7 @@ class Graph extends Model
             $weightCalcs[] = ['code' => $sourceVertex['code'], 'operator' => '-', 'amount' => $sourceVertex['weight']];
         }
 
-        $this->vertices = $this->vertices->map(function($v) use ($weightCalcs) {
+        $this->vertices = $this->vertices->map(function ($v) use ($weightCalcs) {
 
             $vertexCalcs = $weightCalcs->where('code', '=', $v['code']);
 

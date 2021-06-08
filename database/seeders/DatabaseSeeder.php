@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Lobby::create([
-           'code' => 'lob'
+           'code' => 'lob',
+            'map' => 'bayou'
         ]);
     }
 }

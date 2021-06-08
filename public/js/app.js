@@ -2101,7 +2101,9 @@ __webpack_require__.r(__webpack_exports__);
             name: 'Catfish Grove SP 2'
           }
         }
-      }
+      },
+      verticeWeights: [],
+      edges: []
     };
   },
   mounted: function mounted() {
@@ -2118,17 +2120,17 @@ __webpack_require__.r(__webpack_exports__);
     //     console.log("x: " + x + " y: " + y);
     // }, false);
 
-    Echo.channel('lobby.' + this.$parent.lobby).listen('UpdateMap', function (e) {
-      console.log('update map');
-
-      for (var index in e.edges) {
-        var edge = e.edges[index];
-        console.log(edge);
-        self.drawEdge(edge.from, edge.to, edge.weight);
-      }
+    Echo.channel('lobby.' + this.$parent.lobby).listen('UpdateMap', function (data) {
+      self.verticeWeights = data.vertices;
+      self.edges = data.edges;
+      self.resetMap();
     });
   },
   methods: {
+    resetMap: function resetMap() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.drawMap(this.mapName);
+    },
     drawVertices: function drawVertices() {
       var vertices = this.vertices[this.mapName];
 
@@ -2139,34 +2141,44 @@ __webpack_require__.r(__webpack_exports__);
           this.ctx.fillStyle = "#00FF00";
         } else {
           this.ctx.fillStyle = "#FF0000";
+          this.ctx.font = "20px Arial";
+          this.ctx.fillStyle = "#FF0000";
+          this.ctx.fillText(this.getVertexWeight(code), data.x + 20, data.y + 10);
         }
 
         this.ctx.fillRect(data.x - 5, data.y - 5, 10, 10);
       }
     },
-    drawEdge: function drawEdge(startCode, endCode, weight) {
+    getVertexWeight: function getVertexWeight(code) {
+      for (var vertex in this.verticeWeights) {
+        var data = this.verticeWeights[vertex];
+
+        if (data.code == code) {
+          return data.weight;
+        }
+      }
+
+      return 0;
+    },
+    drawEdges: function drawEdges() {
+      for (var index in this.edges) {
+        var edge = this.edges[index];
+        this.drawEdge(edge.a, edge.b);
+      }
+    },
+    drawEdge: function drawEdge(startCode, endCode) {
       var startVertex = this.getByCode(startCode);
       var endVertex = this.getByCode(endCode);
       this.ctx.beginPath();
       this.ctx.moveTo(startVertex.x, startVertex.y);
       this.ctx.lineTo(endVertex.x, endVertex.y);
       this.ctx.stroke();
-      var middle = this.getMiddle(startVertex.x, startVertex.y, endVertex.x, endVertex.y);
-      this.ctx.font = "20px Arial";
-      this.ctx.fillStyle = "#FF0000";
-      this.ctx.fillText(weight, middle.x, middle.y);
     },
     getByCode: function getByCode(code) {
       var vertices = this.vertices[this.mapName];
       return vertices[code];
     },
-    getMiddle: function getMiddle(x1, y1, x2, y2) {
-      return {
-        x: (x1 + x2) / 2,
-        y: (y1 + y2) / 2
-      };
-    },
-    drawMap: function drawMap(mapName) {
+    drawMap: function drawMap(mapName, callback) {
       this.mapName = mapName;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.canvas.width = 750;
@@ -2176,6 +2188,7 @@ __webpack_require__.r(__webpack_exports__);
 
       img.onload = function () {
         self.ctx.drawImage(img, 0, 0);
+        self.drawEdges();
         self.drawVertices();
       };
 
