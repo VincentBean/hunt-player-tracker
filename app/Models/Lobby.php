@@ -9,7 +9,7 @@ class Lobby extends Model
 {
     use HasFactory;
 
-    protected ?Graph $graphModel = null;
+    public ?Graph $graphModel = null;
 
     public function newGraph()
     {
@@ -31,10 +31,12 @@ class Lobby extends Model
         if (is_null($this->graphModel)) {
             if (blank($this->graph)) {
                 $this->graphModel = (new Graph($this->map))->fromFile();
+                $this->save();
             } else {
                 $this->graphModel = (new Graph($this->map))->fromJson($this->graph);
             }
         }
+
 
         return $this->graphModel;
     }

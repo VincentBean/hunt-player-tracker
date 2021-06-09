@@ -51,7 +51,7 @@ export default {
         },
 
         updateMap() {
-
+            axios.get('/update/' + this.lobby);
         }
     },
 

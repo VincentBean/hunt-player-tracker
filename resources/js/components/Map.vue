@@ -68,7 +68,7 @@ export default {
                 }
             },
 
-            verticeWeights: [],
+            vertexData: [],
             edges: []
         }
     },
@@ -93,7 +93,7 @@ export default {
         Echo.channel('lobby.' + this.$parent.lobby)
             .listen('UpdateMap', (data) => {
 
-                self.verticeWeights = data.vertices
+                self.vertexData = data.vertices
                 self.edges = data.edges
 
                 self.resetMap();
@@ -114,44 +114,62 @@ export default {
             for (const code in vertices) {
                 let data = vertices[code];
 
+                let weight = this.getVertexWeight(code)
 
-                if (code.includes('_SP')) {
-                    this.ctx.fillStyle = "#00FF00";
-                } else {
-                    this.ctx.fillStyle = "#FF0000";
-
+                if (weight > 0) {
                     this.ctx.font = "20px Arial"
                     this.ctx.fillStyle = "#FF0000"
                     this.ctx.fillText(this.getVertexWeight(code), data.x + 20, data.y + 10)
                 }
 
+                this.ctx.fillStyle = this.getVertexColor(code);
                 this.ctx.fillRect(data.x - 5, data.y - 5, 10, 10);
             }
         },
 
+        getVertexColor(code) {
+            if (code.includes('_SP'))
+                return '#00FF00'
+
+            let data = this.getVertexData(code)
+
+            if (data != null && data.excluded)
+                return '#000000'
+
+            return '#FF0000';
+        },
+
         getVertexWeight(code) {
-            for (const vertex in this.verticeWeights) {
-                let data = this.verticeWeights[vertex]
+            let data = this.getVertexData(code)
+
+            if (data == null) return 0
+
+            return Math.round(data.weight * 100) / 100
+        },
+
+        getVertexData(code) {
+            for (const vertex in this.vertexData) {
+                let data = this.vertexData[vertex]
 
                 if (data.code == code) {
-                    return data.weight
+                    return data;
                 }
 
             }
 
-            return 0
+            return null
         },
 
         drawEdges() {
             for (const index in this.edges) {
                 let edge = this.edges[index]
-                this.drawEdge(edge.a, edge.b)
+                this.drawEdge(edge)
             }
         },
 
-        drawEdge(startCode, endCode) {
-            let startVertex = this.getByCode(startCode)
-            let endVertex = this.getByCode(endCode)
+        drawEdge(edge) {
+            let startVertex = this.getByCode(edge.a)
+            let endVertex = this.getByCode(edge.b)
 
             this.ctx.beginPath()
 
@@ -159,6 +177,30 @@ export default {
             this.ctx.lineTo(endVertex.x, endVertex.y)
 
             this.ctx.stroke()
+
+            if (edge.dir == '=')
+                return
+
+            let dx = endVertex.x - startVertex.x
+            let dy = endVertex.y - startVertex.y
+
+            let radian = Math.atan2(dy, dx)
+
+            this.ctx.save()
+
+            let middle = this.getMiddle(startVertex.x, startVertex.y, endVertex.x, endVertex.y)
+            this.ctx.font = "20px Arial"
+            this.ctx.fillStyle = "#FFFFFF"
+            this.ctx.textAlign = 'center'
+            this.ctx.translate(middle.x, middle.y)
+            this.ctx.rotate(radian)
+            this.ctx.fillText(edge.dir, 0, 10)
+
+            this.ctx.restore()
+        },
+
+        getMiddle(x1, y1, x2, y2) {
+            return {x: (x1 + x2) / 2, y: (y1 + y2) / 2};
         },
 
         getByCode(code) {

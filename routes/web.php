@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LobbyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('tracker');
 });
+
+Route::get('/update/{code}', [LobbyController::class, 'shiftWeights']);
+Route::post('/vertex/exclude', [LobbyController::class, 'exclude']);

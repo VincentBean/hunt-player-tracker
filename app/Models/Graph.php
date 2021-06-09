@@ -60,7 +60,8 @@ class Graph extends Model
 
                 $edge = [
                     'a' => $vertex,
-                    'b' => $connected
+                    'b' => $connected,
+                    'dir' => '='
                 ];
 
                 if (!$this->edges->has($edge)) {
@@ -73,7 +74,8 @@ class Graph extends Model
 
             return [
                 'code' => $vertex,
-                'weight' => ($spawnPointCount[$vertex] ?? 0)
+                'weight' => ($spawnPointCount[$vertex] ?? 0),
+                'excluded' => false
             ];
 
         });
@@ -88,7 +90,13 @@ class Graph extends Model
                 if ($edge['a'] == $vertex) {
                     return $edge;
                 }
-                return ['a' => $vertex, 'b' => $edge['a']];
+
+                $dir = '=';
+                if ($edge['dir'] != '=') {
+                    $dir = $edge['dir'] == '<' ? '>' : '<';
+                }
+
+                return ['a' => $vertex, 'b' => $edge['a'], 'dir' => $dir];
             });
     }
 
@@ -98,9 +106,9 @@ class Graph extends Model
 
         foreach ($this->vertices->where('weight', '>', 0) as $sourceVertex) {
 
-            $edges = $this->getEdges($sourceVertex['code']);
+            $edges = $this->getEdges($sourceVertex['code'])->where('dir', '!=', '<');
 
-            $distributedWeight = $sourceVertex['weight'] / $edges->count();
+            $distributedWeight = ($sourceVertex['weight'] / $edges->count()) / 3;
 
             foreach ($edges->pluck('b') as $targetVertex) {
                 $weightCalcs[$targetVertex] = $distributedWeight;
@@ -108,7 +116,7 @@ class Graph extends Model
                 $weightCalcs[] = ['code' => $targetVertex, 'operator' => '+', 'amount' => $distributedWeight];
             }
 
-            $weightCalcs[] = ['code' => $sourceVertex['code'], 'operator' => '-', 'amount' => $sourceVertex['weight']];
+            $weightCalcs[] = ['code' => $sourceVertex['code'], 'operator' => '-', 'amount' => $distributedWeight * $edges->count()];
         }
 
         $this->vertices = $this->vertices->map(function ($v) use ($weightCalcs) {
