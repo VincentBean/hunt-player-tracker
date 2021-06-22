@@ -1854,15 +1854,86 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CompoundControls",
   props: ['code', 'name'],
+  data: function data() {
+    return {
+      excluded: false
+    };
+  },
   methods: {
+    setExcluded: function setExcluded(excluded) {
+      this.excluded = excluded;
+    },
     exclude: function exclude() {
       window.axios.post('/vertex/exclude', {
         lobby: this.$parent.lobby,
         code: this.code
       });
+      this.excluded = true;
+    },
+    include: function include() {
+      window.axios.post('/vertex/include', {
+        lobby: this.$parent.lobby,
+        code: this.code
+      });
+      this.excluded = false;
     }
   }
 });
@@ -1887,6 +1958,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Controls",
@@ -1903,6 +1979,51 @@ __webpack_require__.r(__webpack_exports__);
         }, {
           name: 'Cyprus Huts',
           code: 'CH'
+        }, {
+          name: 'Alain Son & Fish',
+          code: 'ASF'
+        }, {
+          name: 'Rynard Mill & Lumber',
+          code: 'RML'
+        }, {
+          name: 'Port Reeker',
+          code: 'PR'
+        }, {
+          name: 'Stillwater Bend',
+          code: 'SB'
+        }, {
+          name: 'The Chapel of Madonna Noire',
+          code: 'CMN'
+        }, {
+          name: 'Scupper Lake',
+          code: 'SL'
+        }, {
+          name: 'Catfish Grove',
+          code: 'CG'
+        }, {
+          name: 'Alice Farm',
+          code: 'AF'
+        }, {
+          name: 'Pitching Crematorium',
+          code: 'PC'
+        }, {
+          name: 'The Slaughterhause',
+          code: 'SH'
+        }, {
+          name: 'Davant Ranch',
+          code: 'DR'
+        }, {
+          name: 'Cyprus Huts',
+          code: 'CH'
+        }, {
+          name: 'Blanchett Graves',
+          code: 'BG'
+        }, {
+          name: 'Darrow Livestock',
+          code: 'DL'
+        }, {
+          name: 'Healing Waters Church',
+          code: 'HWC'
         }]
       }
     };
@@ -1910,6 +2031,25 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     mapCompounds: function mapCompounds() {
       return this.compounds[this.$parent.map];
+    }
+  },
+  methods: {
+    updateControls: function updateControls(vertices) {
+      for (var c in this.mapCompounds) {
+        var compound = this.mapCompounds[c];
+        console.log(compound.code);
+        var vertex = null;
+
+        for (var v in vertices) {
+          if (vertices[v].code == compound.code) {
+            vertex = vertices[v];
+            break;
+          }
+        }
+
+        if (vertex == null) continue;
+        this.$refs[vertex.code][0].setExcluded(vertex.excluded);
+      }
     }
   }
 });
@@ -2184,8 +2324,10 @@ __webpack_require__.r(__webpack_exports__);
     Echo.channel('lobby.' + this.$parent.lobby).listen('UpdateMap', function (data) {
       self.vertexData = data.vertices;
       self.edges = data.edges;
+      self.$parent.updateControls(data.vertices);
       self.resetMap();
     });
+    axios.get('/get/' + this.$parent.lobby);
   },
   methods: {
     resetMap: function resetMap() {
@@ -2374,6 +2516,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Tracker",
@@ -2398,6 +2544,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateMap: function updateMap() {
       axios.get('/update/' + this.lobby);
+    },
+    resetMap: function resetMap() {
+      axios.get('/reset/' + this.lobby);
+    },
+    updateControls: function updateControls(vertices) {
+      this.$refs.controls.updateControls(vertices);
     }
   },
   watch: {
@@ -44447,21 +44599,237 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "button",
-      {
-        staticClass:
-          "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
-        attrs: { type: "button" },
-        on: {
-          click: function($event) {
-            return _vm.exclude(_vm.code)
-          }
-        }
-      },
-      [_vm._v("\n        Exclude " + _vm._s(_vm.name) + "\n    ")]
-    )
+  return _c("li", [
+    _c("div", { staticClass: "blocks" }, [
+      _c("div", { staticClass: "flex items-center py-4 sm:px-6" }, [
+        _c("div", { staticClass: "min-w-0 flex-1 flex items-center" }, [
+          _c("div", { staticClass: "flex min-w-0 flex-1" }, [
+            _c("div", { staticClass: "w-1/3" }, [
+              _c(
+                "p",
+                { staticClass: "text-sm font-medium text-red-600 truncate" },
+                [_vm._v(_vm._s(_vm.name))]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "flex-1" }, [
+              !_vm.excluded
+                ? _c(
+                    "button",
+                    {
+                      staticClass:
+                        "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.exclude(_vm.code)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "svg",
+                        {
+                          staticClass: "h-5 w-5 mr-2",
+                          attrs: {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            fill: "none",
+                            viewBox: "0 0 24 24",
+                            stroke: "currentColor"
+                          }
+                        },
+                        [
+                          _c("path", {
+                            attrs: {
+                              "stroke-linecap": "round",
+                              "stroke-linejoin": "round",
+                              "stroke-width": "2",
+                              d:
+                                "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(
+                        "\n                            Exclude\n                        "
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.excluded
+                ? _c(
+                    "button",
+                    {
+                      staticClass:
+                        "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.include(_vm.code)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "svg",
+                        {
+                          staticClass: "h-5 w-5 mr-2",
+                          attrs: {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            fill: "none",
+                            viewBox: "0 0 24 24",
+                            stroke: "currentColor"
+                          }
+                        },
+                        [
+                          _c("path", {
+                            attrs: {
+                              "stroke-linecap": "round",
+                              "stroke-linejoin": "round",
+                              "stroke-width": "2",
+                              d:
+                                "M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(
+                        "\n                            Include\n                        "
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.exclude(_vm.code)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "h-5 w-5 mr-2",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "none",
+                        viewBox: "0 0 24 24",
+                        stroke: "currentColor"
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          "stroke-linecap": "round",
+                          "stroke-linejoin": "round",
+                          "stroke-width": "2",
+                          d:
+                            "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        }
+                      })
+                    ]
+                  ),
+                  _vm._v(
+                    "\n                            Shot\n                        "
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.exclude(_vm.code)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "h-5 w-5 mr-2",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "none",
+                        viewBox: "0 0 24 24",
+                        stroke: "currentColor"
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          "stroke-linecap": "round",
+                          "stroke-linejoin": "round",
+                          "stroke-width": "2",
+                          d:
+                            "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        }
+                      })
+                    ]
+                  ),
+                  _vm._v(
+                    "\n                            Fight\n                        "
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      return _vm.exclude(_vm.code)
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "h-5 w-5 mr-2",
+                      attrs: {
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "none",
+                        viewBox: "0 0 24 24",
+                        stroke: "currentColor"
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          "stroke-linecap": "round",
+                          "stroke-linejoin": "round",
+                          "stroke-width": "2",
+                          d: "M13 10V3L4 14h7v7l9-11h-7z"
+                        }
+                      })
+                    ]
+                  ),
+                  _vm._v(
+                    "\n                            Boss\n                        "
+                  )
+                ]
+              )
+            ])
+          ])
+        ])
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -44487,13 +44855,22 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    _vm._l(this.mapCompounds, function(c) {
-      return _c("CompoundControls", { attrs: { code: c.code, name: c.name } })
-    }),
-    1
-  )
+  return _c("div", [
+    _c("div", { staticClass: "overflow-hidden sm:rounded-md" }, [
+      _c(
+        "ul",
+        { staticClass: "divide-y divide-gray-600" },
+        _vm._l(this.mapCompounds, function(c) {
+          return _c("CompoundControls", {
+            ref: c.code,
+            refInFor: true,
+            attrs: { code: c.code, name: c.name }
+          })
+        }),
+        1
+      )
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -44691,12 +45068,28 @@ var render = function() {
       ),
       _vm._v(" "),
       _c(
+        "button",
+        {
+          staticClass:
+            "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              return _vm.resetMap()
+            }
+          }
+        },
+        [_vm._v("\n        Reset map\n    ")]
+      ),
+      _vm._v(" "),
+      _c(
         "div",
         { staticClass: "flex space-x-2 mt-4" },
         [
           _c("Map", { ref: "map" }),
           _vm._v(" "),
           _c("Controls", {
+            ref: "controls",
             staticClass: "flex-1 text-white p-4 border border-red-800"
           })
         ],

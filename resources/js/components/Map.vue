@@ -89,16 +89,18 @@ export default {
         //     console.log("x: " + x + " y: " + y);
         // }, false);
 
-
         Echo.channel('lobby.' + this.$parent.lobby)
             .listen('UpdateMap', (data) => {
 
                 self.vertexData = data.vertices
                 self.edges = data.edges
 
-                self.resetMap();
+                self.$parent.updateControls(data.vertices)
+                self.resetMap()
 
             })
+
+        axios.get('/get/' + this.$parent.lobby)
     },
 
     methods: {

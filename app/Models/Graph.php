@@ -108,6 +108,10 @@ class Graph extends Model
 
             $edges = $this->getEdges($sourceVertex['code'])->where('dir', '!=', '<');
 
+            if ($sourceVertex['weight'] == 0 || $edges->count() == 0) {
+                continue;
+            }
+
             $distributedWeight = ($sourceVertex['weight'] / $edges->count()) / 3;
 
             foreach ($edges->pluck('b') as $targetVertex) {
@@ -119,6 +123,7 @@ class Graph extends Model
             $weightCalcs[] = ['code' => $sourceVertex['code'], 'operator' => '-', 'amount' => $distributedWeight * $edges->count()];
         }
 
+        // Apply the weight changes
         $this->vertices = $this->vertices->map(function ($v) use ($weightCalcs) {
 
             $vertexCalcs = $weightCalcs->where('code', '=', $v['code']);

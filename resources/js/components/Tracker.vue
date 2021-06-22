@@ -16,9 +16,13 @@
                 class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
             Update map
         </button>
+        <button v-on:click="resetMap()" type="button"
+                class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
+            Reset map
+        </button>
         <div class="flex space-x-2 mt-4">
             <Map ref="map"/>
-            <Controls class="flex-1 text-white p-4 border border-red-800"/>
+            <Controls ref="controls" class="flex-1 text-white p-4 border border-red-800"/>
         </div>
 
 
@@ -52,6 +56,14 @@ export default {
 
         updateMap() {
             axios.get('/update/' + this.lobby);
+        },
+
+        resetMap() {
+            axios.get('/reset/' + this.lobby);
+        },
+
+        updateControls(vertices) {
+            this.$refs.controls.updateControls(vertices)
         }
     },
 
