@@ -3,7 +3,7 @@
         <div class="overflow-hidden sm:rounded-md">
             <ul class="divide-y divide-gray-600">
                 <CompoundControls :ref="c.code" v-for="c in this.mapCompounds" :code="c.code" :name="c.name"
-                                  />
+                                  :key="c.code" />
             </ul>
         </div>
     </div>
@@ -73,10 +73,6 @@ export default {
                         code: 'DR'
                     },
                     {
-                        name: 'Cyprus Huts',
-                        code: 'CH'
-                    },
-                    {
                         name: 'Blanchett Graves',
                         code: 'BG'
                     },
@@ -96,7 +92,10 @@ export default {
 
     computed: {
         mapCompounds() {
-            return this.compounds[this.$parent.map]
+            if (this.compounds[this.$parent.map] == undefined) {
+                return []
+            }
+            return this.compounds[this.$parent.map].sort((a, b) => a.code.localeCompare(b.code))
         }
     },
 

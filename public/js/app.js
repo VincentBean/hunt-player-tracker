@@ -1934,6 +1934,26 @@ __webpack_require__.r(__webpack_exports__);
         code: this.code
       });
       this.excluded = false;
+    },
+    shot: function shot() {
+      window.axios.post('/vertex/activity/increaseWeight', {
+        lobby: this.$parent.lobby,
+        code: this.code,
+        increase: 1
+      });
+    },
+    fight: function fight() {
+      window.axios.post('/vertex/activity/increaseWeight', {
+        lobby: this.$parent.lobby,
+        code: this.code,
+        increase: 2
+      });
+    },
+    boss: function boss() {
+      window.axios.post('/vertex/activity/boss', {
+        lobby: this.$parent.lobby,
+        code: this.code
+      });
     }
   }
 });
@@ -2013,9 +2033,6 @@ __webpack_require__.r(__webpack_exports__);
           name: 'Davant Ranch',
           code: 'DR'
         }, {
-          name: 'Cyprus Huts',
-          code: 'CH'
-        }, {
           name: 'Blanchett Graves',
           code: 'BG'
         }, {
@@ -2030,7 +2047,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     mapCompounds: function mapCompounds() {
-      return this.compounds[this.$parent.map];
+      if (this.compounds[this.$parent.map] == undefined) {
+        return [];
+      }
+
+      return this.compounds[this.$parent.map].sort(function (a, b) {
+        return a.code.localeCompare(b.code);
+      });
     }
   },
   methods: {
@@ -44601,7 +44624,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("li", [
     _c("div", { staticClass: "blocks" }, [
-      _c("div", { staticClass: "flex items-center py-4 sm:px-6" }, [
+      _c("div", { staticClass: "flex items-center py-2 sm:px-6" }, [
         _c("div", { staticClass: "min-w-0 flex-1 flex items-center" }, [
           _c("div", { staticClass: "flex min-w-0 flex-1" }, [
             _c("div", { staticClass: "w-1/3" }, [
@@ -44618,7 +44641,7 @@ var render = function() {
                     "button",
                     {
                       staticClass:
-                        "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                        "mx-auto inline-flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
@@ -44630,7 +44653,7 @@ var render = function() {
                       _c(
                         "svg",
                         {
-                          staticClass: "h-5 w-5 mr-2",
+                          staticClass: "h-3 w-3 mr-1",
                           attrs: {
                             xmlns: "http://www.w3.org/2000/svg",
                             fill: "none",
@@ -44662,7 +44685,7 @@ var render = function() {
                     "button",
                     {
                       staticClass:
-                        "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                        "mx-auto inline-flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
@@ -44674,7 +44697,7 @@ var render = function() {
                       _c(
                         "svg",
                         {
-                          staticClass: "h-5 w-5 mr-2",
+                          staticClass: "h-3 w-3 mr-1",
                           attrs: {
                             xmlns: "http://www.w3.org/2000/svg",
                             fill: "none",
@@ -44705,11 +44728,11 @@ var render = function() {
                 "button",
                 {
                   staticClass:
-                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                    "mx-auto inline-flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.exclude(_vm.code)
+                      return _vm.shot(_vm.code)
                     }
                   }
                 },
@@ -44717,7 +44740,7 @@ var render = function() {
                   _c(
                     "svg",
                     {
-                      staticClass: "h-5 w-5 mr-2",
+                      staticClass: "h-3 w-3 mr-1",
                       attrs: {
                         xmlns: "http://www.w3.org/2000/svg",
                         fill: "none",
@@ -44747,11 +44770,11 @@ var render = function() {
                 "button",
                 {
                   staticClass:
-                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                    "mx-auto inline-flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.exclude(_vm.code)
+                      return _vm.fight(_vm.code)
                     }
                   }
                 },
@@ -44759,7 +44782,7 @@ var render = function() {
                   _c(
                     "svg",
                     {
-                      staticClass: "h-5 w-5 mr-2",
+                      staticClass: "h-3 w-3 mr-1",
                       attrs: {
                         xmlns: "http://www.w3.org/2000/svg",
                         fill: "none",
@@ -44789,11 +44812,11 @@ var render = function() {
                 "button",
                 {
                   staticClass:
-                    "mx-auto inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                    "mx-auto inline-flex items-center px-2 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      return _vm.exclude(_vm.code)
+                      return _vm.boss(_vm.code)
                     }
                   }
                 },
@@ -44801,7 +44824,7 @@ var render = function() {
                   _c(
                     "svg",
                     {
-                      staticClass: "h-5 w-5 mr-2",
+                      staticClass: "h-3 w-3 mr-1",
                       attrs: {
                         xmlns: "http://www.w3.org/2000/svg",
                         fill: "none",
@@ -44862,6 +44885,7 @@ var render = function() {
         { staticClass: "divide-y divide-gray-600" },
         _vm._l(this.mapCompounds, function(c) {
           return _c("CompoundControls", {
+            key: c.code,
             ref: c.code,
             refInFor: true,
             attrs: { code: c.code, name: c.name }
@@ -45053,6 +45077,20 @@ var render = function() {
       _c("Countdown", { ref: "countdown" }),
       _vm._v(" "),
       _c(
+        "div",
+        { staticClass: "flex space-x-2 mt-4" },
+        [
+          _c("Map", { ref: "map" }),
+          _vm._v(" "),
+          _c("Controls", {
+            ref: "controls",
+            staticClass: "flex-1 text-white p-4 border border-red-800"
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
         "button",
         {
           staticClass:
@@ -45080,20 +45118,6 @@ var render = function() {
           }
         },
         [_vm._v("\n        Reset map\n    ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "flex space-x-2 mt-4" },
-        [
-          _c("Map", { ref: "map" }),
-          _vm._v(" "),
-          _c("Controls", {
-            ref: "controls",
-            staticClass: "flex-1 text-white p-4 border border-red-800"
-          })
-        ],
-        1
       )
     ],
     1

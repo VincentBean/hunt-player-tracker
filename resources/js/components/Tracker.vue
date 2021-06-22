@@ -12,6 +12,12 @@
 
 
         <Countdown ref="countdown"/>
+
+        <div class="flex space-x-2 mt-4">
+            <Map ref="map"/>
+            <Controls ref="controls" class="flex-1 text-white p-4 border border-red-800"/>
+        </div>
+
         <button v-on:click="updateMap()" type="button"
                 class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
             Update map
@@ -20,12 +26,6 @@
                 class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
             Reset map
         </button>
-        <div class="flex space-x-2 mt-4">
-            <Map ref="map"/>
-            <Controls ref="controls" class="flex-1 text-white p-4 border border-red-800"/>
-        </div>
-
-
     </div>
 </template>
 

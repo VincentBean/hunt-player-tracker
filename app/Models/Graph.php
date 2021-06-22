@@ -13,6 +13,9 @@ class Graph extends Model
 
     public Collection $edges;
 
+    // Avg minutes spent on a compound, used for shifting the weights
+    protected const MINS_PER_COMPOUND = 2;
+
     public function __construct(public string $map)
     {
         $this->vertices = new Collection();
@@ -74,7 +77,7 @@ class Graph extends Model
 
             return [
                 'code' => $vertex,
-                'weight' => ($spawnPointCount[$vertex] ?? 0),
+                'weight' => ($spawnPointCount[$vertex] ?? 0) * 10,
                 'excluded' => false
             ];
 
@@ -112,7 +115,7 @@ class Graph extends Model
                 continue;
             }
 
-            $distributedWeight = ($sourceVertex['weight'] / $edges->count()) / 3;
+            $distributedWeight = ($sourceVertex['weight'] / $edges->count()) / self::MINS_PER_COMPOUND;
 
             foreach ($edges->pluck('b') as $targetVertex) {
                 $weightCalcs[$targetVertex] = $distributedWeight;
@@ -142,4 +145,61 @@ class Graph extends Model
         });
     }
 
+    public function exclude(string $code)
+    {
+        $this->vertices = $this->vertices->map(function ($v) use ($code) {
+            if ($v['code'] != $code) {
+                return $v;
+            }
+
+            $v['excluded'] = true;
+
+            return $v;
+        });
+
+        $this->edges = $this->edges->map(function ($e) use ($code) {
+
+            if (($e['a'] == $code || $e['b'] == $code) && $e['dir'] != '=') {
+                $e['dir'] = '=';
+                return $e;
+            }
+
+            if ($e['a'] == $code) {
+                $e['dir'] = '>';
+            }
+
+            if ($e['b'] == $code) {
+                $e['dir'] = '<';
+            }
+
+            return $e;
+        });
+
+        return $this;
+    }
+
+    public function include(string $code)
+    {
+        $this->vertices = $this->vertices->map(function ($v) use ($code) {
+            if ($v['code'] != $code) {
+                return $v;
+            }
+
+            $v['excluded'] = false;
+
+            return $v;
+        });
+
+        $this->edges = $this->edges->map(function ($e) use ($code) {
+
+            if (($e['a'] == $code || $e['b'] == $code) && $e['dir'] != '=') {
+                $e['dir'] = '=';
+                return $e;
+            }
+
+            return $e;
+        });
+
+        return $this;
+    }
 }

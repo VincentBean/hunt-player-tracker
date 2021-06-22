@@ -55,33 +55,7 @@ class LobbyController extends Controller
 
         $graph = $lobby->getGraph();
 
-        $graph->vertices = $graph->vertices->map(function ($v) use ($code) {
-            if ($v['code'] != $code) {
-                return $v;
-            }
-
-            $v['excluded'] = true;
-
-            return $v;
-        });
-
-        $graph->edges = $graph->edges->map(function ($e) use ($code) {
-
-            if (($e['a'] == $code || $e['b'] == $code) && $e['dir'] != '=') {
-                $e['dir'] = '=';
-                return $e;
-            }
-
-            if ($e['a'] == $code) {
-                $e['dir'] = '>';
-            }
-
-            if ($e['b'] == $code) {
-                $e['dir'] = '<';
-            }
-
-            return $e;
-        });
+        $graph->exclude($code);
 
         $lobby->save();
 
@@ -95,26 +69,53 @@ class LobbyController extends Controller
 
         $graph = $lobby->getGraph();
 
-        $graph->vertices = $graph->vertices->map(function ($v) use ($code) {
+        $graph->include($code);
+
+        $lobby->save();
+
+        broadcast(new UpdateMap($lobby));
+    }
+
+    public function increaseWeight(Request $request)
+    {
+        $lobby = Lobby::where('code', '=', $request->lobby)->first();
+        $code = $request->code;
+        $increase = $request->increase ?? 1;
+
+        $graph = $lobby->getGraph();
+
+        $graph->vertices = $graph->vertices->map(function ($v) use ($code, $increase) {
             if ($v['code'] != $code) {
                 return $v;
             }
 
-            $v['excluded'] = false;
+            $v['weight'] += $increase;
 
             return $v;
         });
 
-        $graph->edges = $graph->edges->map(function ($e) use ($code) {
+        $lobby->graph = $graph->toJson();
+        $lobby->save();
 
-            if (($e['a'] == $code || $e['b'] == $code) && $e['dir'] != '=') {
-                $e['dir'] = '=';
-                return $e;
+        broadcast(new UpdateMap($lobby));
+    }
+
+    public function boss(Request $request)
+    {
+        $lobby = Lobby::where('code', '=', $request->lobby)->first();
+        $code = $request->code;
+
+        $graph = $lobby->getGraph();
+
+        $graph->vertices = $graph->vertices->each(function ($v) use ($graph, $code) {
+            if ($v['code'] == $code) {
+                $graph->include($code);
             }
 
-            return $e;
+            $graph->exclude($code);
         });
 
+        $lobby->graph = $graph->toJson();
         $lobby->save();
 
         broadcast(new UpdateMap($lobby));
