@@ -143,6 +143,22 @@ class Graph extends Model
 
             return $v;
         });
+
+        $this->calculatePercentages();
+    }
+
+    public function calculatePercentages(): self
+    {
+        $totalWeight = $this->vertices->sum('weight');
+
+        $this->vertices = $this->vertices->map(function ($v) use ($totalWeight) {
+
+            $v['percent'] = round(($v['weight'] /  $totalWeight) * 100, 2);
+
+            return $v;
+        });
+
+        return $this;
     }
 
     public function exclude(string $code)

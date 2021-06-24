@@ -2366,8 +2366,12 @@ __webpack_require__.r(__webpack_exports__);
 
         if (weight > 0) {
           this.ctx.font = "20px Arial";
-          this.ctx.fillStyle = "#FF0000";
-          this.ctx.fillText(this.getVertexWeight(code), data.x + 20, data.y + 10);
+          this.ctx.fillStyle = "#FFFFFF";
+          this.ctx.shadowBlur = 7;
+          this.ctx.lineWidth = 5;
+          this.ctx.shadowColor = "black";
+          var text = this.getVertexWeight(code) + " (" + this.getVertexPercent(code) + "%)";
+          this.ctx.fillText(text, data.x - 60, data.y + 30);
         }
 
         this.ctx.fillStyle = this.getVertexColor(code);
@@ -2384,6 +2388,11 @@ __webpack_require__.r(__webpack_exports__);
       var data = this.getVertexData(code);
       if (data == null) return 0;
       return Math.round(data.weight * 100) / 100;
+    },
+    getVertexPercent: function getVertexPercent(code) {
+      var data = this.getVertexData(code);
+      if (data == null) return 0;
+      return data.percent;
     },
     getVertexData: function getVertexData(code) {
       for (var vertex in this.vertexData) {

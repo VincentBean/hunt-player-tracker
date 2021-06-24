@@ -120,9 +120,16 @@ export default {
 
                 if (weight > 0) {
                     this.ctx.font = "20px Arial"
-                    this.ctx.fillStyle = "#FF0000"
-                    this.ctx.fillText(this.getVertexWeight(code), data.x + 20, data.y + 10)
+                    this.ctx.fillStyle = "#FFFFFF"
+                    this.ctx.shadowBlur = 7;
+                    this.ctx.lineWidth = 5;
+                    this.ctx.shadowColor="black";
+
+                    let text = this.getVertexWeight(code) + " (" + this.getVertexPercent(code) + "%)";
+
+                    this.ctx.fillText(text, data.x - 60, data.y + 30)
                 }
+
 
                 this.ctx.fillStyle = this.getVertexColor(code);
                 this.ctx.fillRect(data.x - 5, data.y - 5, 10, 10);
@@ -147,6 +154,14 @@ export default {
             if (data == null) return 0
 
             return Math.round(data.weight * 100) / 100
+        },
+
+        getVertexPercent(code) {
+            let data = this.getVertexData(code)
+
+            if (data == null) return 0
+
+            return data.percent
         },
 
         getVertexData(code) {
