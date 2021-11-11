@@ -77,11 +77,14 @@ class Graph extends Model
 
             return [
                 'code' => $vertex,
-                'weight' => ($spawnPointCount[$vertex] ?? 0) * 10,
-                'excluded' => false
+                'weight' => ($spawnPointCount[$vertex] ?? 0),
+                'excluded' => false,
+                'area' => 0
             ];
 
         });
+
+        $this->calculatePercentages();
 
         return $this;
     }
@@ -194,7 +197,7 @@ class Graph extends Model
         return $this;
     }
 
-    public function include(string $code)
+    public function include(string $code): self
     {
         $this->vertices = $this->vertices->map(function ($v) use ($code) {
             if ($v['code'] != $code) {

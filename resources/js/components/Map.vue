@@ -89,7 +89,7 @@ export default {
         //     console.log("x: " + x + " y: " + y);
         // }, false);
 
-        Echo.channel('lobby.' + this.$parent.lobby)
+        Echo.channel('lobby.' + this.$parent.getLobby())
             .listen('UpdateMap', (data) => {
 
                 self.vertexData = data.vertices
@@ -100,7 +100,7 @@ export default {
 
             })
 
-        axios.get('/get/' + this.$parent.lobby)
+        axios.get('/get/' + this.$parent.getLobby())
     },
 
     methods: {
@@ -145,7 +145,11 @@ export default {
             if (data != null && data.excluded)
                 return '#000000'
 
-            return '#FF0000';
+
+            if (data.area == 1)
+                return '#0000FF'
+
+            return '#FF0000'
         },
 
         getVertexWeight(code) {
@@ -159,7 +163,8 @@ export default {
         getVertexPercent(code) {
             let data = this.getVertexData(code)
 
-            if (data == null) return 0
+            if (data == null || data.percent == undefined)
+                return 0
 
             return data.percent
         },

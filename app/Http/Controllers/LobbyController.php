@@ -94,6 +94,8 @@ class LobbyController extends Controller
             return $v;
         });
 
+        $graph->calculatePercentages();
+
         $lobby->graph = $graph->toJson();
         $lobby->save();
 
@@ -107,12 +109,41 @@ class LobbyController extends Controller
 
         $graph = $lobby->getGraph();
 
-        $graph->vertices = $graph->vertices->each(function ($v) use ($graph, $code) {
-            if ($v['code'] == $code) {
-                $graph->include($code);
+        // exclude all not except $code in the same area
+        $bossVertex = $graph->vertices->where('code', $code)->first();
+
+        foreach ($graph->vertices as $v) {
+            if ($v['code'] == $bossVertex['code']) {
+                $graph->include($bossVertex['code']);
+                continue;
             }
 
-            $graph->exclude($code);
+            if ($v['area'] == $bossVertex['area']) {
+                $graph->exclude($v['code']);
+            }
+        }
+
+        $lobby->save();
+
+        broadcast(new UpdateMap($lobby));
+    }
+
+    public function markArea(Request $request)
+    {
+        $lobby = Lobby::where('code', '=', $request->lobby)->first();
+        $code = $request->code;
+        $area = $request->area;
+
+        $graph = $lobby->getGraph();
+
+        $graph->vertices = $graph->vertices->map(function ($v) use ($code, $area) {
+            if ($v['code'] != $code) {
+                return $v;
+            }
+
+            $v['area'] = $area;
+
+            return $v;
         });
 
         $lobby->graph = $graph->toJson();

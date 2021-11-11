@@ -17,7 +17,6 @@ export default {
     components: {CompoundControls},
     data() {
         return {
-            lobby: this.$parent.lobby,
             compounds: {
                 'bayou': [
                     {
@@ -120,6 +119,9 @@ export default {
                 this.$refs[vertex.code][0].setExcluded(vertex.excluded)
 
             }
+        },
+        getLobby() {
+            return this.$parent.getLobby();
         }
     }
 

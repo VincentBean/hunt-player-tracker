@@ -11,10 +11,14 @@ class Lobby extends Model
 
     public ?Graph $graphModel = null;
 
-    public function newGraph()
+    protected $guarded = [];
+
+    public function newGraph(): self
     {
         $this->graphModel = new Graph($this->map);
-        $this->graphModel->constructFromFile();
+        $this->graphModel->fromFile();
+
+        return $this;
     }
 
     public function save(array $options = [])
@@ -26,7 +30,7 @@ class Lobby extends Model
         return parent::save($options);
     }
 
-    public function getGraph()
+    public function getGraph(): ?Graph
     {
         if (is_null($this->graphModel)) {
             if (blank($this->graph)) {

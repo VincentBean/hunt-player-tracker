@@ -6,6 +6,14 @@
                     <div class="flex min-w-0 flex-1">
                         <div class="w-1/3">
                             <p class="text-sm font-medium text-red-600 truncate">{{ name }}</p>
+                            <div class="flex space-x-2">
+                                <button v-on:click="area(0)" type="button" class="inline-flex items-center py-1 px-3 border border-transparent rounded-full shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
+                                   1
+                                </button>
+                                <button v-on:click="area(1)" type="button" class="inline-flex items-center py-1 px-3 border border-transparent rounded-full shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
+                                    2
+                                </button>
+                            </div>
                         </div>
                         <div class="flex-1">
                             <button v-on:click="exclude(code)" v-if="!excluded" type="button"
@@ -78,21 +86,24 @@ export default {
             this.excluded = excluded;
         },
         exclude() {
-            window.axios.post('/vertex/exclude', {lobby: this.$parent.lobby, code: this.code});
+            window.axios.post('/vertex/exclude', {lobby: this.$parent.getLobby(), code: this.code});
             this.excluded = true;
         },
         include() {
-            window.axios.post('/vertex/include', {lobby: this.$parent.lobby, code: this.code});
+            window.axios.post('/vertex/include', {lobby: this.$parent.getLobby(), code: this.code});
             this.excluded = false;
         },
         shot() {
-            window.axios.post('/vertex/activity/increaseWeight', {lobby: this.$parent.lobby, code: this.code, increase: 1});
+            window.axios.post('/vertex/activity/increaseWeight', {lobby: this.$parent.getLobby(), code: this.code, increase: 1});
         },
         fight() {
-            window.axios.post('/vertex/activity/increaseWeight', {lobby: this.$parent.lobby, code: this.code, increase: 2});
+            window.axios.post('/vertex/activity/increaseWeight', {lobby: this.$parent.getLobby(), code: this.code, increase: 2});
         },
         boss() {
-            window.axios.post('/vertex/activity/boss', {lobby: this.$parent.lobby, code: this.code});
+            window.axios.post('/vertex/activity/boss', {lobby: this.$parent.getLobby(), code: this.code});
+        },
+        area(a) {
+            window.axios.post('/vertex/area', {lobby: this.$parent.getLobby(), code: this.code, area: a});
         }
     }
 }

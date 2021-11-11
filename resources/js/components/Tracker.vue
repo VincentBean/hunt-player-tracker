@@ -39,12 +39,21 @@ export default {
         return {
             map: null,
             activeMatch: false,
-            lobby: 'lob'
+            lobby: null
         }
     },
 
     mounted() {
-        this.map = 'bayou'
+
+        this.lobby = window.localStorage.getItem('code')
+        this.map = window.localStorage.getItem('map')
+
+        if (this.lobby == null || this.map == null) {
+            alert('No lobby code or map found');
+            window.location.href = '/';
+            return;
+        }
+
         this.startMatch()
     },
 
@@ -64,6 +73,10 @@ export default {
 
         updateControls(vertices) {
             this.$refs.controls.updateControls(vertices)
+        },
+
+        getLobby() {
+            return window.localStorage.getItem('code');
         }
     },
 

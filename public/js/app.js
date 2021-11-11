@@ -1909,6 +1909,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CompoundControls",
   props: ['code', 'name'],
@@ -1923,36 +1931,43 @@ __webpack_require__.r(__webpack_exports__);
     },
     exclude: function exclude() {
       window.axios.post('/vertex/exclude', {
-        lobby: this.$parent.lobby,
+        lobby: this.$parent.getLobby(),
         code: this.code
       });
       this.excluded = true;
     },
     include: function include() {
       window.axios.post('/vertex/include', {
-        lobby: this.$parent.lobby,
+        lobby: this.$parent.getLobby(),
         code: this.code
       });
       this.excluded = false;
     },
     shot: function shot() {
       window.axios.post('/vertex/activity/increaseWeight', {
-        lobby: this.$parent.lobby,
+        lobby: this.$parent.getLobby(),
         code: this.code,
         increase: 1
       });
     },
     fight: function fight() {
       window.axios.post('/vertex/activity/increaseWeight', {
-        lobby: this.$parent.lobby,
+        lobby: this.$parent.getLobby(),
         code: this.code,
         increase: 2
       });
     },
     boss: function boss() {
       window.axios.post('/vertex/activity/boss', {
-        lobby: this.$parent.lobby,
+        lobby: this.$parent.getLobby(),
         code: this.code
+      });
+    },
+    area: function area(a) {
+      window.axios.post('/vertex/area', {
+        lobby: this.$parent.getLobby(),
+        code: this.code,
+        area: a
       });
     }
   }
@@ -1991,7 +2006,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      lobby: this.$parent.lobby,
       compounds: {
         'bayou': [{
           name: 'Lockbay Docks',
@@ -2073,6 +2087,9 @@ __webpack_require__.r(__webpack_exports__);
         if (vertex == null) continue;
         this.$refs[vertex.code][0].setExcluded(vertex.excluded);
       }
+    },
+    getLobby: function getLobby() {
+      return this.$parent.getLobby();
     }
   }
 });
@@ -2344,13 +2361,13 @@ __webpack_require__.r(__webpack_exports__);
     //     console.log("x: " + x + " y: " + y);
     // }, false);
 
-    Echo.channel('lobby.' + this.$parent.lobby).listen('UpdateMap', function (data) {
+    Echo.channel('lobby.' + this.$parent.getLobby()).listen('UpdateMap', function (data) {
       self.vertexData = data.vertices;
       self.edges = data.edges;
       self.$parent.updateControls(data.vertices);
       self.resetMap();
     });
-    axios.get('/get/' + this.$parent.lobby);
+    axios.get('/get/' + this.$parent.getLobby());
   },
   methods: {
     resetMap: function resetMap() {
@@ -2382,6 +2399,7 @@ __webpack_require__.r(__webpack_exports__);
       if (code.includes('_SP')) return '#00FF00';
       var data = this.getVertexData(code);
       if (data != null && data.excluded) return '#000000';
+      if (data.area == 1) return '#0000FF';
       return '#FF0000';
     },
     getVertexWeight: function getVertexWeight(code) {
@@ -2391,7 +2409,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     getVertexPercent: function getVertexPercent(code) {
       var data = this.getVertexData(code);
-      if (data == null) return 0;
+      if (data == null || data.percent == undefined) return 0;
       return data.percent;
     },
     getVertexData: function getVertexData(code) {
@@ -2562,11 +2580,19 @@ __webpack_require__.r(__webpack_exports__);
     return {
       map: null,
       activeMatch: false,
-      lobby: 'lob'
+      lobby: null
     };
   },
   mounted: function mounted() {
-    this.map = 'bayou';
+    this.lobby = window.localStorage.getItem('code');
+    this.map = window.localStorage.getItem('map');
+
+    if (this.lobby == null || this.map == null) {
+      alert('No lobby code or map found');
+      window.location.href = '/';
+      return;
+    }
+
     this.startMatch();
   },
   methods: {
@@ -2582,6 +2608,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateControls: function updateControls(vertices) {
       this.$refs.controls.updateControls(vertices);
+    },
+    getLobby: function getLobby() {
+      return window.localStorage.getItem('code');
     }
   },
   watch: {
@@ -2597,35 +2626,23 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-cookies */ "./node_modules/vue-cookies/vue-cookies.js");
+/* harmony import */ var vue_cookies__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_cookies__WEBPACK_IMPORTED_MODULE_0__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js").default;
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+
+window.Vue.use((vue_cookies__WEBPACK_IMPORTED_MODULE_0___default()));
 
 var files = __webpack_require__("./resources/js sync recursive \\.vue$/");
 
 files.keys().map(function (key) {
   return Vue.component(key.split('/').pop().split('.')[0], files(key)["default"]);
 });
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
 var app = new Vue({
   el: '#app'
 });
@@ -44183,6 +44200,156 @@ runtime.setup(pusher_Pusher);
 
 /***/ }),
 
+/***/ "./node_modules/vue-cookies/vue-cookies.js":
+/*!*************************************************!*\
+  !*** ./node_modules/vue-cookies/vue-cookies.js ***!
+  \*************************************************/
+/***/ ((module) => {
+
+/**
+ * Vue Cookies v1.7.4
+ * https://github.com/cmp-cc/vue-cookies
+ *
+ * Copyright 2016, cmp-cc
+ * Released under the MIT license
+ */
+
+(function () {
+
+  var defaultConfig = {
+    expires: '1d',
+    path: '; path=/',
+    domain: '',
+    secure: '',
+    sameSite: '; SameSite=Lax'
+  };
+
+  var VueCookies = {
+    // install of Vue
+    install: function (Vue) {
+      Vue.prototype.$cookies = this;
+      Vue.$cookies = this;
+    },
+    config: function (expireTimes, path, domain, secure, sameSite) {
+      defaultConfig.expires = expireTimes ? expireTimes : '1d';
+      defaultConfig.path = path ? '; path=' + path : '; path=/';
+      defaultConfig.domain = domain ? '; domain=' + domain : '';
+      defaultConfig.secure = secure ? '; Secure' : '';
+      defaultConfig.sameSite = sameSite ? '; SameSite=' + sameSite : '; SameSite=Lax';
+    },
+    get: function (key) {
+      var value = decodeURIComponent(document.cookie.replace(new RegExp('(?:(?:^|.*;)\\s*' + encodeURIComponent(key).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')) || null;
+
+      if (value && value.substring(0, 1) === '{' && value.substring(value.length - 1, value.length) === '}') {
+        try {
+          value = JSON.parse(value);
+        } catch (e) {
+          return value;
+        }
+      }
+      return value;
+    },
+    set: function (key, value, expireTimes, path, domain, secure, sameSite) {
+      if (!key) {
+        throw new Error('Cookie name is not find in first argument.');
+      } else if (/^(?:expires|max\-age|path|domain|secure|SameSite)$/i.test(key)) {
+        throw new Error('Cookie key name illegality, Cannot be set to ["expires","max-age","path","domain","secure","SameSite"]\t current key name: ' + key);
+      }
+      // support json object
+      if (value && value.constructor === Object) {
+        value = JSON.stringify(value);
+      }
+      var _expires = '';
+      expireTimes = expireTimes == undefined ? defaultConfig.expires : expireTimes;
+      if (expireTimes && expireTimes != 0) {
+        switch (expireTimes.constructor) {
+          case Number:
+            if (expireTimes === Infinity || expireTimes === -1) _expires = '; expires=Fri, 31 Dec 9999 23:59:59 GMT';
+            else _expires = '; max-age=' + expireTimes;
+            break;
+          case String:
+            if (/^(?:\d+(y|m|d|h|min|s))$/i.test(expireTimes)) {
+              // get capture number group
+              var _expireTime = expireTimes.replace(/^(\d+)(?:y|m|d|h|min|s)$/i, '$1');
+              // get capture type group , to lower case
+              switch (expireTimes.replace(/^(?:\d+)(y|m|d|h|min|s)$/i, '$1').toLowerCase()) {
+                  // Frequency sorting
+                case 'm':
+                  _expires = '; max-age=' + +_expireTime * 2592000;
+                  break; // 60 * 60 * 24 * 30
+                case 'd':
+                  _expires = '; max-age=' + +_expireTime * 86400;
+                  break; // 60 * 60 * 24
+                case 'h':
+                  _expires = '; max-age=' + +_expireTime * 3600;
+                  break; // 60 * 60
+                case 'min':
+                  _expires = '; max-age=' + +_expireTime * 60;
+                  break; // 60
+                case 's':
+                  _expires = '; max-age=' + _expireTime;
+                  break;
+                case 'y':
+                  _expires = '; max-age=' + +_expireTime * 31104000;
+                  break; // 60 * 60 * 24 * 30 * 12
+                default:
+                  new Error('unknown exception of "set operation"');
+              }
+            } else {
+              _expires = '; expires=' + expireTimes;
+            }
+            break;
+          case Date:
+            _expires = '; expires=' + expireTimes.toUTCString();
+            break;
+        }
+      }
+      document.cookie =
+          encodeURIComponent(key) + '=' + encodeURIComponent(value) +
+          _expires +
+          (domain ? '; domain=' + domain : defaultConfig.domain) +
+          (path ? '; path=' + path : defaultConfig.path) +
+          (secure == undefined ? defaultConfig.secure : secure ? '; Secure' : '') +
+          (sameSite == undefined ? defaultConfig.sameSite : (sameSite ? '; SameSite=' + sameSite : ''));
+      return this;
+    },
+    remove: function (key, path, domain) {
+      if (!key || !this.isKey(key)) {
+        return false;
+      }
+      document.cookie = encodeURIComponent(key) +
+          '=; expires=Thu, 01 Jan 1970 00:00:00 GMT' +
+          (domain ? '; domain=' + domain : defaultConfig.domain) +
+          (path ? '; path=' + path : defaultConfig.path) +
+          '; SameSite=Lax';
+      return this;
+    },
+    isKey: function (key) {
+      return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(key).replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\=')).test(document.cookie);
+    },
+    keys: function () {
+      if (!document.cookie) return [];
+      var _keys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '').split(/\s*(?:\=[^;]*)?;\s*/);
+      for (var _index = 0; _index < _keys.length; _index++) {
+        _keys[_index] = decodeURIComponent(_keys[_index]);
+      }
+      return _keys;
+    }
+  };
+
+  if (true) {
+    module.exports = VueCookies;
+  } else {}
+  // vue-cookies can exist independently,no dependencies library
+  if (typeof window !== 'undefined') {
+    window.$cookies = VueCookies;
+  }
+
+})();
+
+
+/***/ }),
+
 /***/ "./resources/js/components/CompoundControls.vue":
 /*!******************************************************!*\
   !*** ./resources/js/components/CompoundControls.vue ***!
@@ -44641,7 +44808,47 @@ var render = function() {
                 "p",
                 { staticClass: "text-sm font-medium text-red-600 truncate" },
                 [_vm._v(_vm._s(_vm.name))]
-              )
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "flex space-x-2" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass:
+                      "inline-flex items-center py-1 px-3 border border-transparent rounded-full shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.area(0)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                               1\n                            "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass:
+                      "inline-flex items-center py-1 px-3 border border-transparent rounded-full shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        return _vm.area(1)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                                2\n                            "
+                    )
+                  ]
+                )
+              ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "flex-1" }, [
@@ -57394,6 +57601,18 @@ webpackContext.id = "./resources/js sync recursive \\.vue$/";
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	
