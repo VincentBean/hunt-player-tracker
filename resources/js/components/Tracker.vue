@@ -1,30 +1,33 @@
 <template>
     <div class="pt-8">
         <div v-if="!activeMatch">
-            <MapPicker/>
+            <!--            <MapPicker/>-->
             <div class="flex mt-8">
-                <button v-if="map != null" v-on:click="startMatch()" type="button"
+                <button v-on:click="startMatch()" type="button"
                         class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
                     Start match
                 </button>
             </div>
         </div>
 
-
-        <Countdown ref="countdown"/>
+        <h1 class="text-red-800 text-4xl text-center">Countdown: {{ minutesLeft }}</h1>
 
         <div class="flex space-x-2 mt-4">
             <Map ref="map"/>
             <Controls ref="controls" class="flex-1 text-white p-4 border border-red-800"/>
         </div>
 
-        <button v-on:click="updateMap()" type="button"
+        <button v-on:click="shiftWeights()" type="button"
                 class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
-            Update map
+            Shift weights
         </button>
         <button v-on:click="resetMap()" type="button"
                 class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
-            Reset map
+            Reset
+        </button>
+        <button v-on:click="resetTracker()" type="button"
+                class="mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
+            Hard reset
         </button>
     </div>
 </template>
@@ -39,7 +42,8 @@ export default {
         return {
             map: null,
             activeMatch: false,
-            lobby: null
+            lobby: null,
+            minutesLeft: 60
         }
     },
 
@@ -48,22 +52,28 @@ export default {
         this.lobby = window.localStorage.getItem('code')
         this.map = window.localStorage.getItem('map')
 
-        if (this.lobby == null || this.map == null) {
+        if (this.lobby == null || this.lobby == '' || this.map == null) {
             alert('No lobby code or map found');
             window.location.href = '/';
             return;
         }
 
-        this.startMatch()
+        let self = this;
+        Echo.channel('lobby.' + this.getLobby())
+            .listen('UpdateLobby', (data) => {
+                self.activeMatch = data.started;
+                self.minutesLeft = data.minutesLeft;
+            })
+
+        axios.get('/get/' + this.lobby);
     },
 
     methods: {
         startMatch() {
-            this.activeMatch = true
-            this.$refs.countdown.start()
+            axios.get('/start/' + this.lobby);
         },
 
-        updateMap() {
+        shiftWeights() {
             axios.get('/update/' + this.lobby);
         },
 
@@ -77,6 +87,15 @@ export default {
 
         getLobby() {
             return window.localStorage.getItem('code');
+        },
+
+        resetTracker() {
+            if (!confirm('This will kick you out of this lobby!')) {
+                return;
+            }
+
+            window.localStorage.clear();
+            window.location.replace('/')
         }
     },
 

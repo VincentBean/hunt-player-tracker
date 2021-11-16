@@ -28,7 +28,8 @@
 
     </form>
 
-    <button onclick="submit()" type="submit" class="my-8 mx-auto inline-flex items-center px-12 py-6 border border-transparent text-4xl font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
+    <button onclick="submit()" type="submit"
+            class="my-8 mx-auto inline-flex items-center px-12 py-6 border border-transparent text-4xl font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
         Start
     </button>
 </main>
@@ -40,15 +41,15 @@
         let map = document.getElementById("map").value;
         let code = document.getElementById("code").value;
 
-        if (code.length == 0) {
-            code = (Math.random() + 1).toString(36).substring(16);
+        if (code == '' || code == null || code.length === 0) {
+            code = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             document.getElementById("code").value = code;
         }
 
-        document.getElementById("start").submit();
-
         window.localStorage.setItem('map', map);
         window.localStorage.setItem('code', code);
+
+        document.getElementById("start").submit();
     }
 </script>
 </body>

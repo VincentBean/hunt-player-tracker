@@ -31,14 +31,6 @@
         class="my-8 mx-auto inline-flex items-center px-12 py-6 border border-transparent text-4xl font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none">
         Start
     </a>
-
-    <br/>
-
-    <span class="mt-4 text-sm text-gray-300 text-center">
-            Are you a designer and hate how this site looks? Great!
-            <a class="text-blue-600"
-               href="https://github.com/vincentbean/hunt-player-tracker">Create a PR and fix it.</a>
-        </span>
 </main>
 
 <script src="{{ mix('/js/app.js') }}"></script>

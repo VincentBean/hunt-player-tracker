@@ -2,20 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Action\ShiftWeights;
+use App\Events\UpdateLobby;
 use App\Events\UpdateMap;
 use App\Models\Lobby;
 use Illuminate\Http\Request;
 
+// TODO: Replace $code with route binding to the lobby
 class LobbyController extends Controller
 {
+    public function start(string $code)
+    {
+        $lobby = Lobby::where('code', '=', $code)->first();
+
+        abort_if(is_null($lobby) || $lobby->started, 400);
+
+        $lobby->update(['started_at' => now(), 'started' => true]);
+
+        broadcast(new UpdateLobby($lobby));
+        broadcast(new UpdateMap($lobby));
+    }
+
     public function publish(string $code)
     {
         $lobby = Lobby::where('code', '=', $code)->first();
 
-        if (is_null($lobby)) {
-            return;
-        }
+        abort_if($lobby === null, 404);
 
+        broadcast(new UpdateLobby($lobby));
         broadcast(new UpdateMap($lobby));
     }
 
@@ -23,27 +37,25 @@ class LobbyController extends Controller
     {
         $lobby = Lobby::where('code', '=', $code)->first();
 
-        if (is_null($lobby)) {
-            return;
-        }
+        abort_if($lobby === null, 404);
 
         $lobby->graph = null;
+        $lobby->started = false;
+        $lobby->started_at = null;
+        $lobby->ended_at = null;
         $lobby->save();
 
         broadcast(new UpdateMap($lobby));
-
+        broadcast(new UpdateLobby($lobby));
     }
 
     public function shiftWeights(string $code)
     {
         $lobby = Lobby::where('code', '=', $code)->first();
 
-        if (blank($lobby->graph)) {
-            $lobby->getGraph();
-        } else {
-            $lobby->getGraph()->shiftWeights();
-            $lobby->save();
-        }
+        abort_if($lobby === null, 404);
+
+        ShiftWeights::execute($lobby);
 
         broadcast(new UpdateMap($lobby));
     }
@@ -79,6 +91,9 @@ class LobbyController extends Controller
     public function increaseWeight(Request $request)
     {
         $lobby = Lobby::where('code', '=', $request->lobby)->first();
+
+        abort_if($lobby === null, 404);
+
         $code = $request->code;
         $increase = $request->increase ?? 1;
 
@@ -105,6 +120,9 @@ class LobbyController extends Controller
     public function boss(Request $request)
     {
         $lobby = Lobby::where('code', '=', $request->lobby)->first();
+
+        abort_if($lobby === null, 404);
+
         $code = $request->code;
 
         $graph = $lobby->getGraph();
@@ -131,6 +149,9 @@ class LobbyController extends Controller
     public function markArea(Request $request)
     {
         $lobby = Lobby::where('code', '=', $request->lobby)->first();
+
+        abort_if($lobby === null, 404);
+
         $code = $request->code;
         $area = $request->area;
 

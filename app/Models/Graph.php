@@ -14,12 +14,14 @@ class Graph extends Model
     public Collection $edges;
 
     // Avg minutes spent on a compound, used for shifting the weights
-    protected const MINS_PER_COMPOUND = 2;
+    protected const MINS_PER_COMPOUND = 4;
 
-    public function __construct(public string $map)
+    public function __construct(public string $map, array $attributes = [])
     {
         $this->vertices = new Collection();
         $this->edges = new Collection();
+
+        parent::__construct($attributes);
     }
 
     public function toJson($options = 0): string

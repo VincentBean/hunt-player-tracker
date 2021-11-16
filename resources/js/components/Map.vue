@@ -99,8 +99,6 @@ export default {
                 self.resetMap()
 
             })
-
-        axios.get('/get/' + this.$parent.getLobby())
     },
 
     methods: {
@@ -146,7 +144,7 @@ export default {
                 return '#000000'
 
 
-            if (data.area == 1)
+            if (data != null && data.area == 1)
                 return '#0000FF'
 
             return '#FF0000'

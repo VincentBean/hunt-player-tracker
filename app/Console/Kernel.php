@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(UpdateLobbies::class);
+        $schedule->command(UpdateLobbies::class)->everyMinute();
     }
 
     protected function commands()

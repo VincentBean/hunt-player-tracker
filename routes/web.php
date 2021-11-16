@@ -10,6 +10,7 @@ Route::post('/start', [MatchController::class, 'start']);
 
 Route::get('/tracker', fn () => view('tracker'));
 
+Route::get('/start/{code}', [LobbyController::class, 'start']);
 Route::get('/get/{code}', [LobbyController::class, 'publish']);
 Route::get('/update/{code}', [LobbyController::class, 'shiftWeights']);
 Route::get('/reset/{code}', [LobbyController::class, 'reset']);

@@ -2074,7 +2074,6 @@ __webpack_require__.r(__webpack_exports__);
     updateControls: function updateControls(vertices) {
       for (var c in this.mapCompounds) {
         var compound = this.mapCompounds[c];
-        console.log(compound.code);
         var vertex = null;
 
         for (var v in vertices) {
@@ -2090,46 +2089,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     getLobby: function getLobby() {
       return this.$parent.getLobby();
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-//
-//
-//
-//
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "Countdown",
-  data: function data() {
-    return {
-      countdown: 60,
-      timer: null
-    };
-  },
-  methods: {
-    start: function start() {
-      var self = this;
-      this.timer = setInterval(function () {
-        if (self.countdown <= 0) return;
-        self.countdown--;
-      }, 1000 * 60);
-    },
-    reset: function reset() {
-      clearInterval(this.timer);
-      this.countdown = 60;
     }
   }
 });
@@ -2367,7 +2326,6 @@ __webpack_require__.r(__webpack_exports__);
       self.$parent.updateControls(data.vertices);
       self.resetMap();
     });
-    axios.get('/get/' + this.$parent.getLobby());
   },
   methods: {
     resetMap: function resetMap() {
@@ -2399,7 +2357,7 @@ __webpack_require__.r(__webpack_exports__);
       if (code.includes('_SP')) return '#00FF00';
       var data = this.getVertexData(code);
       if (data != null && data.excluded) return '#000000';
-      if (data.area == 1) return '#0000FF';
+      if (data != null && data.area == 1) return '#0000FF';
       return '#FF0000';
     },
     getVertexWeight: function getVertexWeight(code) {
@@ -2570,6 +2528,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Tracker",
@@ -2580,27 +2541,32 @@ __webpack_require__.r(__webpack_exports__);
     return {
       map: null,
       activeMatch: false,
-      lobby: null
+      lobby: null,
+      minutesLeft: 60
     };
   },
   mounted: function mounted() {
     this.lobby = window.localStorage.getItem('code');
     this.map = window.localStorage.getItem('map');
 
-    if (this.lobby == null || this.map == null) {
+    if (this.lobby == null || this.lobby == '' || this.map == null) {
       alert('No lobby code or map found');
       window.location.href = '/';
       return;
     }
 
-    this.startMatch();
+    var self = this;
+    Echo.channel('lobby.' + this.getLobby()).listen('UpdateLobby', function (data) {
+      self.activeMatch = data.started;
+      self.minutesLeft = data.minutesLeft;
+    });
+    axios.get('/get/' + this.lobby);
   },
   methods: {
     startMatch: function startMatch() {
-      this.activeMatch = true;
-      this.$refs.countdown.start();
+      axios.get('/start/' + this.lobby);
     },
-    updateMap: function updateMap() {
+    shiftWeights: function shiftWeights() {
       axios.get('/update/' + this.lobby);
     },
     resetMap: function resetMap() {
@@ -2611,6 +2577,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     getLobby: function getLobby() {
       return window.localStorage.getItem('code');
+    },
+    resetTracker: function resetTracker() {
+      if (!confirm('This will kick you out of this lobby!')) {
+        return;
+      }
+
+      window.localStorage.clear();
+      window.location.replace('/');
     }
   },
   watch: {
@@ -44428,45 +44402,6 @@ component.options.__file = "resources/js/components/Controls.vue"
 
 /***/ }),
 
-/***/ "./resources/js/components/Countdown.vue":
-/*!***********************************************!*\
-  !*** ./resources/js/components/Countdown.vue ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Countdown.vue?vue&type=template&id=48937fd6&scoped=true& */ "./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true&");
-/* harmony import */ var _Countdown_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Countdown.vue?vue&type=script&lang=js& */ "./resources/js/components/Countdown.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
-  _Countdown_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
-  _Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
-  _Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  "48937fd6",
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Countdown.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
 /***/ "./resources/js/components/Map.vue":
 /*!*****************************************!*\
   !*** ./resources/js/components/Map.vue ***!
@@ -44616,22 +44551,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Countdown.vue?vue&type=script&lang=js&":
-/*!************************************************************************!*\
-  !*** ./resources/js/components/Countdown.vue?vue&type=script&lang=js& ***!
-  \************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Countdown_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Countdown.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Countdown_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
-
-/***/ }),
-
 /***/ "./resources/js/components/Map.vue?vue&type=script&lang=js&":
 /*!******************************************************************!*\
   !*** ./resources/js/components/Map.vue?vue&type=script&lang=js& ***!
@@ -44710,23 +44629,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Controls_vue_vue_type_template_id_8b03ddbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Controls_vue_vue_type_template_id_8b03ddbe_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Controls.vue?vue&type=template&id=8b03ddbe&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Controls.vue?vue&type=template&id=8b03ddbe&scoped=true&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true&":
-/*!******************************************************************************************!*\
-  !*** ./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true& ***!
-  \******************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Countdown_vue_vue_type_template_id_48937fd6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Countdown.vue?vue&type=template&id=48937fd6&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true&");
 
 
 /***/ }),
@@ -45119,33 +45021,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true&":
-/*!*********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Countdown.vue?vue&type=template&id=48937fd6&scoped=true& ***!
-  \*********************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* binding */ render),
-/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("h1", { staticClass: "text-red-800 text-4xl text-center" }, [
-    _vm._v("Countdown: " + _vm._s(_vm.countdown))
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Map.vue?vue&type=template&id=479a2f41&":
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Map.vue?vue&type=template&id=479a2f41& ***!
@@ -45257,87 +45132,91 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "pt-8" },
-    [
-      !_vm.activeMatch
-        ? _c(
-            "div",
-            [
-              _c("MapPicker"),
-              _vm._v(" "),
-              _c("div", { staticClass: "flex mt-8" }, [
-                _vm.map != null
-                  ? _c(
-                      "button",
-                      {
-                        staticClass:
-                          "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            return _vm.startMatch()
-                          }
-                        }
-                      },
-                      [_vm._v("\n                Start match\n            ")]
-                    )
-                  : _vm._e()
-              ])
-            ],
-            1
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("Countdown", { ref: "countdown" }),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "flex space-x-2 mt-4" },
-        [
-          _c("Map", { ref: "map" }),
-          _vm._v(" "),
-          _c("Controls", {
-            ref: "controls",
-            staticClass: "flex-1 text-white p-4 border border-red-800"
-          })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass:
-            "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              return _vm.updateMap()
-            }
+  return _c("div", { staticClass: "pt-8" }, [
+    !_vm.activeMatch
+      ? _c("div", [
+          _c("div", { staticClass: "flex mt-8" }, [
+            _c(
+              "button",
+              {
+                staticClass:
+                  "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    return _vm.startMatch()
+                  }
+                }
+              },
+              [_vm._v("\n                Start match\n            ")]
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("h1", { staticClass: "text-red-800 text-4xl text-center" }, [
+      _vm._v("Countdown: " + _vm._s(_vm.minutesLeft))
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "flex space-x-2 mt-4" },
+      [
+        _c("Map", { ref: "map" }),
+        _vm._v(" "),
+        _c("Controls", {
+          ref: "controls",
+          staticClass: "flex-1 text-white p-4 border border-red-800"
+        })
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass:
+          "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            return _vm.shiftWeights()
           }
-        },
-        [_vm._v("\n        Update map\n    ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass:
-            "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
-          attrs: { type: "button" },
-          on: {
-            click: function($event) {
-              return _vm.resetMap()
-            }
+        }
+      },
+      [_vm._v("\n        Shift weights\n    ")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass:
+          "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            return _vm.resetMap()
           }
-        },
-        [_vm._v("\n        Reset map\n    ")]
-      )
-    ],
-    1
-  )
+        }
+      },
+      [_vm._v("\n        Reset\n    ")]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass:
+          "mx-auto inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-gray-200 border-red-800 bg-red-900 hover:bg-red-800 focus:outline-none",
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            return _vm.resetTracker()
+          }
+        }
+      },
+      [_vm._v("\n        Hard reset\n    ")]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -57512,7 +57391,6 @@ Vue.compile = compileToFunctions;
 var map = {
 	"./components/CompoundControls.vue": "./resources/js/components/CompoundControls.vue",
 	"./components/Controls.vue": "./resources/js/components/Controls.vue",
-	"./components/Countdown.vue": "./resources/js/components/Countdown.vue",
 	"./components/Map.vue": "./resources/js/components/Map.vue",
 	"./components/MapPicker.vue": "./resources/js/components/MapPicker.vue",
 	"./components/Tracker.vue": "./resources/js/components/Tracker.vue"

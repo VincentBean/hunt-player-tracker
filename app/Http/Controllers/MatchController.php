@@ -23,7 +23,6 @@ class MatchController extends Controller
         if (Lobby::where('code', $code)->first() === null) {
             Lobby::create([
                 'code' => $code,
-                'countdown' => 60,
                 'started' => false,
                 'map' => $map,
                 'graph' => '{}'

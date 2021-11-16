@@ -103,7 +103,6 @@ export default {
             for (let c in this.mapCompounds) {
 
                 let compound = this.mapCompounds[c]
-                console.log(compound.code)
 
                 let vertex = null
 

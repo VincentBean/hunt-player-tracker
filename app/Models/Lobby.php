@@ -13,6 +13,11 @@ class Lobby extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
+    ];
+
     public function newGraph(): self
     {
         $this->graphModel = new Graph($this->map);
@@ -43,5 +48,10 @@ class Lobby extends Model
 
 
         return $this->graphModel;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('started', '1');
     }
 }
