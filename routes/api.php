@@ -5,23 +5,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/deploy', function(Request $request) {
 
-    $sig_check = 'sha1=' . hash_hmac('sha1', $request->getContent(), config('services.deploy_key'));
-
-    if ($sig_check !== $request->header('x-hub-signature')) {  // php >=5.6 and above should use hash_equals() for comparison
-        \Log::info('MATCH');
-    }
-    \Log::info('FAIL');
-
-
-    return response('deploying');
-    $key = config('services.deploy_key');
-
-    if ($key === null) {
-        return response('No deployment key set', 500);
+    if (($signature = $request->headers->get('X-Hub-Signature')) == null) {
+        abort(400, 'Signature header is not set.');
     }
 
-    if ($key !== $request->key) {
-        abort(404);
+    $signatureData = explode('=', $signature);
+
+    if (count($signatureData) !== 2) {
+        abort(400, 'Signature format is invalid.');
+    }
+
+    $webhookSignature = hash_hmac('sha1', $request->getContent(), config('services.deploy_key'));
+
+    if (!hash_equals($webhookSignature, $signatureData[1])) {
+        abort(401, 'Could not verify request signature ' . $signatureData[1]);
     }
 
     exec("sh " . base_path() . "/deploy.sh &");
