@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/deploy', function(Request $request) {
 
+    \Log::info($request->toArray());
+    return response('deploying');
     $key = config('services.deploy_key');
 
     if ($key === null) {
