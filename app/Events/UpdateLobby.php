@@ -25,7 +25,9 @@ class UpdateLobby implements ShouldBroadcast
         $this->lobby = $lobby;
 
         $this->started = isset($lobby->started_at) && !isset($lobby->ended_at);
-        $this->minutesLeft = 60 - $lobby->started_at->diffInMinutes(now());
+        $this->minutesLeft = $lobby->started_at === null
+            ? 60
+            : 60 - $lobby->started_at->diffInMinutes(now());
 
         if ($this->minutesLeft <= 0) {
             LobbyFinished::dispatch($lobby);
@@ -34,6 +36,6 @@ class UpdateLobby implements ShouldBroadcast
 
     public function broadcastOn(): Channel
     {
-        return new Channel('lobby.'.$this->lobby->code);
+        return new Channel('lobby.' . $this->lobby->code);
     }
 }
