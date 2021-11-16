@@ -245,7 +245,7 @@ export default {
                 self.drawVertices()
             }
 
-            img.src = '/' + mapName + '.png'
+            img.src = '/storage/' + mapName + '.png'
             this.ctx.scale(this.scale, this.scale)
         },
 
