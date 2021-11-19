@@ -14,7 +14,7 @@ class Graph extends Model
     public Collection $edges;
 
     // Avg minutes spent on a compound, used for shifting the weights
-    protected const MINS_PER_COMPOUND = 4;
+    protected const MINS_PER_COMPOUND = 2;
 
     public function __construct(public string $map, array $attributes = [])
     {
