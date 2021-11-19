@@ -83,7 +83,23 @@ export default {
                         name: 'Healing Waters Church',
                         code: 'HWC'
                     },
-
+                ],
+                'delta': [
+                    { code: 'GD', name: "Godard Docks"},
+                    { code: 'BB', name: "Blanc Brinery"},
+                    { code: 'GA', name: "Golden Acres"},
+                    { code: 'SP', name: "Salter's Pork"},
+                    { code: 'MB', name: "Maw Battery"},
+                    { code: 'LS', name: "Lawson Station"},
+                    { code: 'WR', name: "Windy Run"},
+                    { code: 'NP', name: "Nocholls Prison"},
+                    { code: 'SF', name: "Sweetbell Flour"},
+                    { code: 'FC', name: "Fort Carmick"},
+                    { code: 'IW', name: "Iron Works"},
+                    { code: 'WA', name: "Wolfshead Arsenal"},
+                    { code: 'BCB', name: "Bradley & Craven Brickworks"},
+                    { code: 'CAL', name: "C&A Lumber"},
+                    { code: 'HH', name: "Hemlock and Hide"},
                 ]
             }
         }

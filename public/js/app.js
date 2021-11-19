@@ -2055,6 +2055,52 @@ __webpack_require__.r(__webpack_exports__);
         }, {
           name: 'Healing Waters Church',
           code: 'HWC'
+        }],
+        'delta': [{
+          code: 'GD',
+          name: "Godard Docks"
+        }, {
+          code: 'BB',
+          name: "Blanc Brinery"
+        }, {
+          code: 'GA',
+          name: "Golden Acres"
+        }, {
+          code: 'SP',
+          name: "Salter's Pork"
+        }, {
+          code: 'MB',
+          name: "Maw Battery"
+        }, {
+          code: 'LS',
+          name: "Lawson Station"
+        }, {
+          code: 'WR',
+          name: "Windy Run"
+        }, {
+          code: 'NP',
+          name: "Nocholls Prison"
+        }, {
+          code: 'SF',
+          name: "Sweetbell Flour"
+        }, {
+          code: 'FC',
+          name: "Fort Carmick"
+        }, {
+          code: 'IW',
+          name: "Iron Works"
+        }, {
+          code: 'WA',
+          name: "Wolfshead Arsenal"
+        }, {
+          code: 'BCB',
+          name: "Bradley & Craven Brickworks"
+        }, {
+          code: 'CAL',
+          name: "C&A Lumber"
+        }, {
+          code: 'HH',
+          name: "Hemlock and Hide"
         }]
       }
     };
@@ -2320,7 +2366,7 @@ __webpack_require__.r(__webpack_exports__);
           'BB': {
             x: 243,
             y: 109,
-            name: ""
+            name: "Blanc Brinery"
           },
           'BB_SP1': {
             x: 235,
@@ -2330,7 +2376,7 @@ __webpack_require__.r(__webpack_exports__);
           'GA': {
             x: 463,
             y: 112,
-            name: ""
+            name: "Golden Acres"
           },
           'GA_SP1': {
             x: 355,
@@ -2345,7 +2391,7 @@ __webpack_require__.r(__webpack_exports__);
           'SP': {
             x: 611,
             y: 150,
-            name: ""
+            name: "Salter's Pork"
           },
           'SP_SP1': {
             x: 611,
@@ -2365,7 +2411,7 @@ __webpack_require__.r(__webpack_exports__);
           'MB': {
             x: 133,
             y: 317,
-            name: ""
+            name: "Maw Battery"
           },
           'MB_SP1': {
             x: 23,
@@ -2375,17 +2421,17 @@ __webpack_require__.r(__webpack_exports__);
           'LS': {
             x: 363,
             y: 198,
-            name: ""
+            name: "Lawson Station"
           },
           'AP': {
             x: 546,
             y: 310,
-            name: ""
+            name: "Arden Parish"
           },
           'WR': {
             x: 663,
             y: 420,
-            name: ""
+            name: "Windy Run"
           },
           'WR_SP1': {
             x: 704,
@@ -2400,22 +2446,22 @@ __webpack_require__.r(__webpack_exports__);
           'NP': {
             x: 505,
             y: 434,
-            name: ""
+            name: "Nocholls Prison"
           },
           'SF': {
             x: 352,
             y: 315,
-            name: ""
+            name: "Sweetbell Flour"
           },
           'FC': {
             x: 232,
             y: 438,
-            name: ""
+            name: "Fort Carmick"
           },
           'IW': {
             x: 74,
             y: 478,
-            name: ""
+            name: "Iron Works"
           },
           'IW_SP1': {
             x: 17,
@@ -2430,7 +2476,7 @@ __webpack_require__.r(__webpack_exports__);
           'WA': {
             x: 142,
             y: 596,
-            name: ""
+            name: "Wolfshead Arsenal"
           },
           'WA_SP1': {
             x: 24,
@@ -2445,7 +2491,7 @@ __webpack_require__.r(__webpack_exports__);
           'BCB': {
             x: 298,
             y: 670,
-            name: ""
+            name: "Bradley & Craven Brickworks"
           },
           'BCB_SP1': {
             x: 233,
@@ -2460,7 +2506,7 @@ __webpack_require__.r(__webpack_exports__);
           'CAL': {
             x: 461,
             y: 559,
-            name: ""
+            name: "C&A Lumber"
           },
           'CAL_SP1': {
             x: 475,
@@ -2470,7 +2516,7 @@ __webpack_require__.r(__webpack_exports__);
           'HH': {
             x: 613,
             y: 572,
-            name: ""
+            name: "Hemlock and Hide"
           },
           'HH_SP1': {
             x: 614,
@@ -2564,7 +2610,6 @@ __webpack_require__.r(__webpack_exports__);
     drawEdges: function drawEdges() {
       for (var index in this.edges) {
         var edge = this.edges[index];
-        console.log(edge);
         this.drawEdge(edge);
       }
     },
