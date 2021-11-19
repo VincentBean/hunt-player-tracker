@@ -17,6 +17,7 @@
         @csrf
         <select id="map" name="map" class="my-4 px-2 py-1">
             <option value="bayou">Stillwater Bayou</option>
+            <option value="delta">Lawson Delta</option>
         </select>
 
         <br/>

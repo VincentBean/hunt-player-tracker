@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class MatchController extends Controller
 {
-    const ALLOWED_MAPS = ['bayou'];
+    const ALLOWED_MAPS = ['bayou', 'delta'];
 
     public function start(Request $request)
     {

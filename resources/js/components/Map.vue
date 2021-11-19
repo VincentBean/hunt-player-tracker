@@ -65,7 +65,58 @@ export default {
                     'CG': {x: 623, y: 616, name: 'Catfish Grove'},
                     'CG_SP1': {x: 726, y: 613, name: 'Catfish Grove SP 1'},
                     'CG_SP2': {x: 633, y: 712, name: 'Catfish Grove SP 2'},
+                },
+                'delta': {
+                    'GD': {x: 84, y: 106, name: "Godard Docks"},
+                    'GD_SP1': {x: 6, y: 157, name: "Godard Docks SP1"},
+                    'GD_SP2': {x: 108, y: 14, name: "Godard Docks SP2"},
+
+                    'BB': {x: 243, y: 109, name: ""},
+                    'BB_SP1': {x: 235, y: 7, name: ""},
+
+                    'GA': {x: 463, y: 112, name: ""},
+                    'GA_SP1': {x: 355, y: 16, name: ""},
+                    'GA_SP2': {x: 498, y: 14, name: ""},
+
+                    'SP': {x: 611, y: 150, name: ""},
+                    'SP_SP1': {x: 611, y: 21, name: ""},
+                    'SP_SP2': {x: 691, y: 106, name: ""},
+                    'SP_SP3': {x: 689, y: 200, name: ""},
+
+                    'MB': {x: 133, y: 317, name: ""},
+                    'MB_SP1': {x: 23, y: 287, name: ""},
+
+                    'LS': {x: 363, y: 198, name: ""},
+                    'AP': {x: 546, y: 310, name: ""},
+
+                    'WR': {x: 663, y: 420, name: ""},
+                    'WR_SP1': {x: 704, y: 328, name: ""},
+                    'WR_SP2': {x: 704, y: 508, name: ""},
+
+                    'NP': {x: 505, y: 434, name: ""},
+                    'SF': {x: 352, y: 315, name: ""},
+                    'FC': {x: 232, y: 438, name: ""},
+
+                    'IW': {x: 74, y: 478, name: ""},
+                    'IW_SP1': {x: 17, y: 434, name: ""},
+                    'IW_SP2': {x: 20, y: 542, name: ""},
+
+                    'WA': {x: 142, y: 596, name: ""},
+                    'WA_SP1': {x: 24, y: 632, name: ""},
+                    'WA_SP2': {x: 127, y: 720, name: ""},
+
+                    'BCB': {x: 298, y: 670, name: ""},
+                    'BCB_SP1': {x: 233, y: 716, name: ""},
+                    'BCB_SP2': {x: 318, y: 719, name: ""},
+
+                    'CAL': {x: 461, y: 559, name: ""},
+                    'CAL_SP1': {x: 475, y: 712, name: ""},
+
+                    'HH': {x: 613, y: 572, name: ""},
+                    'HH_SP1': {x: 614, y: 709, name: ""},
+                    'HH_SP2': {x: 695, y: 614, name: ""},
                 }
+
             },
 
             vertexData: [],
@@ -78,16 +129,16 @@ export default {
         this.ctx = this.canvas.getContext('2d')
 
         let self = this;
-        // this.canvas.addEventListener('mousedown', function (event) {
-        //     const rect = self.canvas.getBoundingClientRect()
-        //     const x = event.clientX - rect.left
-        //     const y = event.clientY - rect.top
-        //
-        //     self.ctx.fillStyle = "#00FF00";
-        //     self.ctx.fillRect(x, y, 10, 10);
-        //
-        //     console.log("x: " + x + " y: " + y);
-        // }, false);
+        this.canvas.addEventListener('mousedown', function (event) {
+            const rect = self.canvas.getBoundingClientRect()
+            const x = event.clientX - rect.left
+            const y = event.clientY - rect.top
+
+            self.ctx.fillStyle = "#00FF00";
+            self.ctx.fillRect(x, y, 10, 10);
+
+            console.log("x: " + x + " y: " + y);
+        }, false);
 
         Echo.channel('lobby.' + this.$parent.getLobby())
             .listen('UpdateMap', (data) => {
@@ -121,7 +172,7 @@ export default {
                     this.ctx.fillStyle = "#FFFFFF"
                     this.ctx.shadowBlur = 7;
                     this.ctx.lineWidth = 5;
-                    this.ctx.shadowColor="black";
+                    this.ctx.shadowColor = "black";
 
                     let text = this.getVertexWeight(code) + " (" + this.getVertexPercent(code) + "%)";
 
@@ -183,6 +234,7 @@ export default {
         drawEdges() {
             for (const index in this.edges) {
                 let edge = this.edges[index]
+                console.log(edge);
                 this.drawEdge(edge)
             }
         },
